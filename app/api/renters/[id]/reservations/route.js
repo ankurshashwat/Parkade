@@ -23,7 +23,7 @@ export const GET = async (request, { params }) => {
 
 //POST
 export const POST = async (req) => {
-  const { renterId, address, hourlyRate, parkingSpaceId, start, end } =
+  const { renterId, address, hourlyRate, parkingSpaceId, start, end, txHash } =
     await req.json();
 
   try {
@@ -34,6 +34,9 @@ export const POST = async (req) => {
     const durationInHours = (endTime - startTime) / (1000 * 60 * 60);
     const amount = durationInHours * hourlyRate;
 
+    //check if the req slot is empty
+
+
     const newReservation = new Reservations({
       renter: renterId,
       address,
@@ -42,6 +45,7 @@ export const POST = async (req) => {
       endTime: end,
       amount,
       parkingSpace: parkingSpaceId,
+      txHash,
     });
 
     await newReservation.save();

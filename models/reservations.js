@@ -27,6 +27,10 @@ const ReservationsSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  txHash: {
+    type: String,
+    required: true,
+  }
 });
 const Reservations =
   models.Reservations || model("Reservations", ReservationsSchema);

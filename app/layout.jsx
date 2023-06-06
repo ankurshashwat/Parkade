@@ -4,7 +4,7 @@ import "@styles/globals.css";
 
 export const metadata = {
   title: "Parkade",
-  description: "A one stop solution for booking and managing parking spots.",
+  description: "parkade provides a streamlined experience for individuals looking to monetize their parking spaces or find convenient parking solutions.",
 };
 
 const RootLayout = ({ children }) => (
