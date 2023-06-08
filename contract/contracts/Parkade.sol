@@ -9,56 +9,46 @@ contract Parkade {
         bool paid;
     }
 
-    Reservation[] public reservations;
+    mapping(bytes32 => Reservation) public reservations;
 
-    event ReservationStored(
-        uint256 indexed reservationId,
+    event Rsvp(
+        bytes32 indexed reservationId,
         address indexed user,
-        uint256 indexed startTime,
-        uint256 endTime
+        uint256 startTime,
+        uint256 endTime,
+        uint256 amount,
+        bool paid
     );
 
-    event PaymentReceived(address indexed user, uint256 amount);
-
-    function storeReservation(
+    function MakeReservation(
         uint256 _hourlyRate,
         uint256 _startTime,
         uint256 _endTime
-    ) external {
+    ) external payable {
         require(_hourlyRate > 0, "Hourly rate must be greater than zero");
-        require(
-            _endTime > _startTime,
-            "End time must be greater than start time"
-        );
+        require(_endTime > _startTime, "End time must be greater than start time");
 
+        uint256 duration = _endTime - _startTime;
+        uint256 amount = _hourlyRate * duration;
+        require(msg.value >= amount, "Insufficient payment");
+
+        bytes32 reservationId = keccak256(abi.encodePacked(msg.sender, block.timestamp));
         Reservation memory newReservation = Reservation(
             _hourlyRate,
             _startTime,
             _endTime,
-            false
+            true
         );
-        reservations.push(newReservation);
+        reservations[reservationId] = newReservation;
 
-        emit ReservationStored(
-            reservations.length - 1,
+        emit Rsvp(
+            reservationId,
             msg.sender,
             _startTime,
-            _endTime
+            _endTime,
+            amount,
+            true
         );
-    }
-
-    function makeReservation(uint256 _reservationId) external payable {
-        require(_reservationId < reservations.length, "Invalid reservation ID");
-
-        Reservation storage reservation = reservations[_reservationId];
-        require(!reservation.paid, "Reservation already paid");
-
-        uint256 duration = reservation.endTime - reservation.startTime;
-        uint256 amount = reservation.hourlyRate * duration;
-        require(msg.value >= amount, "Insufficient payment");
-
-        reservation.paid = true;
-        emit PaymentReceived(msg.sender, amount);
 
         address payable contractAddress = payable(address(this));
         contractAddress.transfer(amount);

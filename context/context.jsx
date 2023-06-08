@@ -1,55 +1,70 @@
-import web3 from "web3";
-import Reservations from "@models/reservations";
+"use client";
 
-const makeReservation = async (renter, parkingSpace, startTime, endTime, amount) => {
-  // Connect to the blockchain using a web3 provider
-  const provider = new web3.providers.HttpProvider("https://<your-blockchain-provider-url>");
-  const web3Instance = new web3(provider);
+import React, { createContext, useEffect, useState } from "react";
+import Web3 from "web3";
+import { contractAddress, contractABI } from "@utils/constants";
 
-  // Get the deployed smart contract instance using the contract address
-  const contractAddress = "<your-contract-address>";
-  const contract = new web3Instance.eth.Contract(contractABI, contractAddress);
+// Create the context
+const ParkadeContext = createContext();
 
-  // Make the reservation transaction using the contract's function
-  const reservationResult = await contract.methods.makeReservation(renter, parkingSpace, startTime, endTime, amount).send();
+// Define the Parkade context provider
+const ParkadeProvider = ({ children }) => {
+  const [contract, setContract] = useState(null);
+  const [reservations, setReservations] = useState([]);
+  const [error, setError] = useState(null);
 
-  // Store the transaction hash in the database
-  const reservation = new Reservations({
-    renter,
-    parkingSpace,
-    startTime,
-    endTime,
-    amount,
-    paid: false,
-    txHash: reservationResult.transactionHash,
-    contractAddress, // Add the contract address to the reservation model
-  });
-  await reservation.save();
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        // Check if Web3 is available
+        if (window.ethereum) {
+          // Request access to user accounts
+          await window.ethereum.request({ method: "eth_requestAccounts" });
 
-  // Return the reservation object or any other relevant response
-  return reservation;
+          // Create the Web3 instance
+          const web3 = new Web3(window.ethereum);
+
+          // Create the contract instance
+          const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+          setContract(contract);
+        } else {
+          throw new Error("Metamask is not installed.");
+        }
+      } catch (err) {
+        console.error("Error initializing contract:", err);
+        setError(
+          "Error initializing contract. Make sure Metamask is connected and installed."
+        );
+      }
+    };
+
+    initialize();
+  }, []);
+
+  const makeReservation = async (hourlyRate, startTime, endTime) => {
+    try {
+      await contract.methods
+        .makeReservation(hourlyRate, startTime, endTime)
+        .send();
+    } catch (err) {
+      console.error("Error storing reservation:", err);
+      setError("Error storing reservation.");
+    }
+  };
+
+  const parkadeContextValue = {
+    contract,
+    reservations,
+    makeReservation,
+    error,
+  };
+
+  return (
+    <ParkadeContext.Provider value={parkadeContextValue}>
+      {children}
+    </ParkadeContext.Provider>
+  );
 };
 
-const updateReservationStatus = async (reservationId, txHash) => {
-  // Find the reservation by ID
-  const reservation = await Reservations.findById(reservationId);
-
-  // Connect to the blockchain using a web3 provider
-  const provider = new web3.providers.HttpProvider("https://<your-blockchain-provider-url>");
-  const web3Instance = new web3(provider);
-
-  // Get the deployed smart contract instance using the contract address
-  const contractAddress = reservation.contractAddress;
-  const contract = new web3Instance.eth.Contract(contractABI, contractAddress);
-
-  // Check the transaction status on the blockchain
-  const transaction = await web3Instance.eth.getTransaction(txHash);
-  const isPaid = transaction.blockNumber !== null;
-
-  // Update the paid status in the reservation model
-  reservation.paid = isPaid;
-  await reservation.save();
-
-  // Return the updated reservation object or any other relevant response
-  return reservation;
-};
+export { ParkadeContext, ParkadeProvider };

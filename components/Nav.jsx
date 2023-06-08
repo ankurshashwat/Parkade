@@ -19,7 +19,7 @@ const Nav = () => {
     setupProviders();
   }, []);
 
-  console.log(session);
+  console.log("Session:", session);
 
   return (
     <nav className="flex items-center justify-between w-full mb-16 pt-3 px-8">
