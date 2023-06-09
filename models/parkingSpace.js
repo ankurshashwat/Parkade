@@ -6,9 +6,18 @@ const ParkingSpaceSchema = new Schema({
     ref: "User",
     required: true,
   },
-  address: {
+  metamask: {
     type: String,
     required: true,
+  },
+  address: {
+    type: Object,
+    lat: {
+      type: Number,
+    },
+    long: {
+      type: Number,
+    },
   },
   hourlyRate: {
     type: Number,

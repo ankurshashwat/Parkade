@@ -2,8 +2,8 @@ import { connectMongoDB } from "@utils/database";
 import ParkingSpace from "@models/parkingSpace";
 
 export const POST = async (req) => {
-  const { ownerId, metamask, address, hourlyRate } = await req.json();
-
+  const { address } = await req.json();
+  console.log(address)
   try {
     await connectMongoDB();
     const newParkingSpace = new ParkingSpace({

@@ -11,6 +11,7 @@ const ParkadeContext = createContext();
 const ParkadeProvider = ({ children }) => {
   const [contract, setContract] = useState(null);
   const [reservations, setReservations] = useState([]);
+  const [account, setAccount] = useState();
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -20,7 +21,6 @@ const ParkadeProvider = ({ children }) => {
         if (window.ethereum) {
           // Request access to user accounts
           await window.ethereum.request({ method: "eth_requestAccounts" });
-
           // Create the Web3 instance
           const web3 = new Web3(window.ethereum);
 
@@ -28,6 +28,9 @@ const ParkadeProvider = ({ children }) => {
           const contract = new web3.eth.Contract(contractABI, contractAddress);
 
           setContract(contract);
+
+          const accounts = await web3.eth.getAccounts();
+          setAccount(accounts[0]);
         } else {
           throw new Error("Metamask is not installed.");
         }
@@ -47,6 +50,7 @@ const ParkadeProvider = ({ children }) => {
       await contract.methods
         .makeReservation(hourlyRate, startTime, endTime)
         .send();
+        //! return transaction hash and paid field after tranasaction 
     } catch (err) {
       console.error("Error storing reservation:", err);
       setError("Error storing reservation.");
@@ -55,6 +59,7 @@ const ParkadeProvider = ({ children }) => {
 
   const parkadeContextValue = {
     contract,
+    account,
     reservations,
     makeReservation,
     error,
