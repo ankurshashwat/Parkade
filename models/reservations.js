@@ -6,10 +6,6 @@ const ReservationsSchema = new Schema({
     ref: "User",
     required: true,
   },
-  metamask: {
-    type: String,
-    required: true,
-  },
   parkingSpace: {
     type: Schema.Types.ObjectId,
     ref: "ParkingSpace",

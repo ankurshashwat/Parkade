@@ -45,15 +45,38 @@ const ParkadeProvider = ({ children }) => {
     initialize();
   }, []);
 
-  const makeReservation = async (hourlyRate, startTime, endTime) => {
+  const makeReservation = async (
+    hourlyRate,
+    startTime,
+    endTime,
+    ownerAddress
+  ) => {
     try {
-      await contract.methods
-        .makeReservation(hourlyRate, startTime, endTime)
-        .send();
-        //! return transaction hash and paid field after tranasaction 
+      const hourlyRateWei = Web3.utils.toWei(hourlyRate.toString(), "ether");
+      const startTimeUnix = Math.floor(startTime);
+      const endTimeUnix = Math.floor(endTime);
+
+      // Make the reservation transaction
+      const accounts = await Web3.eth.getAccounts();
+      const transaction = contract.methods.MakeReservation(
+        hourlyRateWei,
+        startTimeUnix,
+        endTimeUnix,
+        ownerAddress
+      );
+      const gas = await transaction.estimateGas({ from: accounts[0] });
+      const result = await transaction.send({
+        from: accounts[0],
+        value: 0,
+        gas,
+      });
+
+      // Wait for the transaction to be mined
+      await result.transactionHash;
+      //! amount and paid field after transaction
     } catch (err) {
-      console.error("Error storing reservation:", err);
-      setError("Error storing reservation.");
+      console.error("Error making reservation:", err);
+      setError("Error making reservation.");
     }
   };
 

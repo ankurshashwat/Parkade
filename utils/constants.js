@@ -1,4 +1,4 @@
-export const contractAddress = "0xF589Fcfa0cDc28681Ac26f7Bf5f07d56f56cf6Df";
+export const contractAddress = "0x7021f3F5fEbE0075236d0c52BA40B2df32d236fD";
 export const contractABI =  [
   {
     "anonymous": false,
@@ -38,6 +38,12 @@ export const contractABI =  [
         "internalType": "bool",
         "name": "paid",
         "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "ownerAddress",
+        "type": "address"
       }
     ],
     "name": "Rsvp",
@@ -59,6 +65,11 @@ export const contractABI =  [
         "internalType": "uint256",
         "name": "_endTime",
         "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_ownerAddress",
+        "type": "address"
       }
     ],
     "name": "MakeReservation",
@@ -95,6 +106,11 @@ export const contractABI =  [
         "internalType": "bool",
         "name": "paid",
         "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "ownerAddress",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

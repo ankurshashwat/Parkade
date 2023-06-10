@@ -23,23 +23,14 @@ export const GET = async (request, { params }) => {
 
 //POST
 export const POST = async (req) => {
-  const { renterId, address, hourlyRate, parkingSpaceId, start, end, txHash } =
+  const { renterId, hourlyRate, parkingSpaceId, start, end, amount, txHash } =
     await req.json();
 
   try {
     await connectMongoDB();
-
-    const startTime = new Date(start);
-    const endTime = new Date(end);
-    const durationInHours = (endTime - startTime) / (1000 * 60 * 60);
-    const amount = durationInHours * hourlyRate;
-
     //check if the req slot is empty
-
-
     const newReservation = new Reservations({
       renter: renterId,
-      address,
       hourlyRate,
       startTime: start,
       endTime: end,
@@ -49,7 +40,7 @@ export const POST = async (req) => {
     });
 
     await newReservation.save();
-
+    console.log("reservation made");
     await ParkingSpace.findByIdAndUpdate(
       parkingSpaceId,
       {
@@ -60,12 +51,14 @@ export const POST = async (req) => {
       { new: true }
     );
 
-    return new Response(JSON.stringify(newReservation), {
-      status: 201,
-    });
+    return new Response(
+      JSON.stringify({ ...newReservation._doc, success: true }),
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
     console.log(error);
     return new Response("Failed to make a new reservation", { status: 500 });
   }
 };
-
