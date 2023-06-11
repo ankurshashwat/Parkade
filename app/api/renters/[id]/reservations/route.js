@@ -35,6 +35,7 @@ export const POST = async (req) => {
       startTime: start,
       endTime: end,
       amount,
+      paid: true,
       parkingSpace: parkingSpaceId,
       txHash,
     });

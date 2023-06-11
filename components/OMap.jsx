@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { darkMapStyle } from "@utils/constants";
 
@@ -11,7 +11,7 @@ const containerStyle = {
 
 const libraries = ["places"];
 
-const Map = () => {
+const OMap = ({ updateAddress }) => {
   const [markers, setMarkers] = useState([]);
   const searchBoxRef = useRef(null);
   const mapRef = useRef(null);
@@ -62,6 +62,12 @@ const Map = () => {
     return <div>Error loading Google Maps</div>;
   }
 
+  useEffect(() => {
+    if (markers.length > 0) {
+      updateAddress(markers[markers.length - 1]);
+    }
+  }, [markers]);
+
   return isLoaded ? (
     <div style={{ width: "100%", height: "100%" }}>
       <input
@@ -102,4 +108,4 @@ const Map = () => {
   );
 };
 
-export default Map;
+export default OMap;

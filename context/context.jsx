@@ -72,8 +72,8 @@ const ParkadeProvider = ({ children }) => {
       });
 
       // Wait for the transaction to be mined
-      await result.transactionHash;
-      //! amount and paid field after transaction
+      await result.wait();
+      return result;
     } catch (err) {
       console.error("Error making reservation:", err);
       setError("Error making reservation.");

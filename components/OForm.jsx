@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Map from "./OMap";
 
-const OwnerForm = ({ handleSubmit, handleChange, post, submit }) => {
-  const { ownerAddress, hourlyRate, metamask, reservations } = post;
+const OwnerForm = ({ handleSubmit, handleChange, post, submit, updateAddress }) => {
+  const { hourlyRate, metamask, reservations } = post;
 
   return (
     <section className="w-full max-w-full flex-start flex-col mb-8">
@@ -13,24 +14,15 @@ const OwnerForm = ({ handleSubmit, handleChange, post, submit }) => {
       <p className="desc text-left max-w-md">
         Fill in the form details below.
       </p>
-
       <form
         onSubmit={handleSubmit}
         className="mt-10 w-full max-w-2xl flex flex-col gap-7 glassmorphism"
       >
         <label className="flex flex-col">
           <span className="font-satoshi font-semibold text-base text-gray-700">
-            Owner Address
+            Select Your Parking Space Location
           </span>
-          <textarea
-            type="text"
-            name="ownerAddress"
-            value={ownerAddress}
-            onChange={handleChange}
-            placeholder="Enter owner address"
-            required
-            className="form_textarea"
-          />
+          <Map updateAddress={updateAddress} />
         </label>
 
         <label className="flex flex-col">
@@ -56,11 +48,10 @@ const OwnerForm = ({ handleSubmit, handleChange, post, submit }) => {
           <input
             type="text"
             name="metamask"
+            className="form_input font-semibold" 
             value={metamask}
-            onChange={handleChange}
             placeholder="Enter owner metamask address"
             required
-            className="form_input"
           />
         </label>
 
