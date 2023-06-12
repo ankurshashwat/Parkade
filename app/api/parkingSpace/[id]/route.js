@@ -1,21 +1,22 @@
 import { connectMongoDB } from "@utils/database";
 import ParkingSpace from "@models/parkingSpace";
+import user from "@models/user";
 
 // GET
 export const GET = async (request, { params }) => {
   try {
     await connectMongoDB();
 
-    const parkingSpace = await ParkingSpace.findById(params.id).populate(
-      "owner"
-    );
+    // Find all parking spaces associated with the owner ID
+    const parkingSpaces = await ParkingSpace.find({ owner: params.id }).populate("owner");
 
-    if (!parkingSpace) {
-      return new Response("parkingSpace not found", {
+    if (!parkingSpaces) {
+      return new Response("Parking spaces not found", {
         status: 404,
       });
     }
-    return new Response(JSON.stringify(parkingSpace), {
+
+    return new Response(JSON.stringify(parkingSpaces), {
       status: 200,
     });
   } catch (error) {

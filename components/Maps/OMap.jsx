@@ -84,6 +84,7 @@ const OMap = ({ updateAddress }) => {
           borderRadius: "3px",
           boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)",
           fontSize: "14px",
+          color: "black",
           outline: "none",
           textOverflow: "ellipsis",
         }}
@@ -95,7 +96,7 @@ const OMap = ({ updateAddress }) => {
           zoom={10}
           onLoad={onMapLoad}
           onClick={onMapClick}
-          options={{ styles: darkMapStyle }} // Apply the dark map style
+          options={{ styles: darkMapStyle }} 
         >
           {markers.map((marker, index) => (
             <Marker key={index} position={marker} />

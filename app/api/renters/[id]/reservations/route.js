@@ -9,7 +9,7 @@ export const GET = async (request, { params }) => {
 
     const reservations = await Reservations.find({
       renter: params.id,
-    }).populate("renter");
+    }).populate("parkingSpace");
 
     return new Response(JSON.stringify(reservations), {
       status: 200,

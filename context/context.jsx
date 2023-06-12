@@ -45,40 +45,38 @@ const ParkadeProvider = ({ children }) => {
     initialize();
   }, []);
 
-  const makeReservation = async (
-    hourlyRate,
-    startTime,
-    endTime,
-    ownerAddress
-  ) => {
-    try {
-      const hourlyRateWei = Web3.utils.toWei(hourlyRate.toString(), "ether");
-      const startTimeUnix = Math.floor(startTime);
-      const endTimeUnix = Math.floor(endTime);
-
-      // Make the reservation transaction
-      const accounts = await Web3.eth.getAccounts();
-      const transaction = contract.methods.MakeReservation(
-        hourlyRateWei,
-        startTimeUnix,
-        endTimeUnix,
-        ownerAddress
-      );
-      const gas = await transaction.estimateGas({ from: accounts[0] });
-      const result = await transaction.send({
-        from: accounts[0],
-        value: 0,
-        gas,
-      });
-
-      // Wait for the transaction to be mined
-      await result.wait();
-      return result;
-    } catch (err) {
-      console.error("Error making reservation:", err);
-      setError("Error making reservation.");
-    }
+  const makeReservation = (hourlyRate, startTime, endTime, ownerAddress) => {
+    return new Promise((resolve, reject) => {
+      const hourlyRateWithoutDecimals = parseInt(hourlyRate);
+      const hourlyRateInt = Math.round(hourlyRateWithoutDecimals);
+      const startTimestamp = Math.floor(new Date(startTime).getTime() / 1000);
+      const endTimestamp = Math.floor(new Date(endTime).getTime() / 1000);
+  
+      const duration = endTimestamp - startTimestamp;
+      const amount = duration * hourlyRateInt;
+  
+      contract.methods
+        .makeReservation(
+          parseInt(startTimestamp),
+          parseInt(endTimestamp),
+          ownerAddress
+        )
+        .send({ from: account, value: amount })
+        .on("transactionHash", (hash) => {
+          console.log("Transaction Hash:", hash);
+          resolve({ amount: amount, txHash: hash });
+        })
+        .on("confirmation", (confirmationNumber, receipt) => {
+          console.log("Confirmation Number:", confirmationNumber);
+          console.log("Receipt:", receipt);
+        })
+        .on("error", (error) => {
+          console.error("Error:", error);
+          reject(error);
+        });
+    });
   };
+  
 
   const parkadeContextValue = {
     contract,

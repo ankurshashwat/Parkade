@@ -1,11 +1,10 @@
 "use client";
 
-import Form from "@components/RForm";
-import { useContext, useEffect, useState, useMemo } from "react";
+import Form from "@components/Form";
+import { useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ParkadeContext } from "@context/context";
-import { get } from "mongoose";
 
 const Page = () => {
   const { push } = useRouter();
@@ -13,12 +12,13 @@ const Page = () => {
   const { makeReservation } = useContext(ParkadeContext);
 
   const [parkingSpaceAddress, setParkingSpaceAddress] = useState({
-    lat: 0,
-    long: 0,
+    lat: 0.0,
+    long: 0.0,
   });
 
   const [parkingSpaceData, setParkingSpaceData] = useState();
   const [markers, setMarkers] = useState([]);
+  const [reservedSlots, setReservedSlots] = useState([]);
 
   const [post, setPost] = useState({
     metamask: "",
@@ -33,15 +33,14 @@ const Page = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPost((prevPost) => {
-      return ({
+      return {
         ...prevPost,
         [name]: value,
-      });
+      };
     });
   };
 
   const updateAddress = async ({ lng, lat }) => {
-    console.log("from update", "lng:", lng, "lat:", lat)
     setParkingSpaceAddress({
       lat: lat,
       long: lng,
@@ -59,12 +58,27 @@ const Page = () => {
     console.log("parking:", data);
     return data;
   };
+  
+  // const getReservedSlots = async () => {
+  //   const response = await fetch(`api/parkingSpace/slots/${parkingSpaceData._id}`, {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       address: parkingSpaceAddress,
+  //     }),
+  //   });
+  //   const data = await response.json();
+  //   console.log("slots:", data);
+  //   return data;
+  // };
 
   const getAllMarkers = async () => {
     const response = await fetch("api/parkingSpace/");
     const data = await response.json();
     const filteredData = data.filter(
-      (parkingSpace) => parkingSpace.address && parkingSpace.address.long && parkingSpace.address.lat
+      (parkingSpace) =>
+        parkingSpace.address &&
+        parkingSpace.address.long &&
+        parkingSpace.address.lat
     );
     const markers = filteredData.map((parkingSpace) => ({
       lat: parkingSpace.address.lat,
@@ -85,12 +99,18 @@ const Page = () => {
     e.preventDefault();
     if (!parkingSpaceData) return;
 
-    const res = makeReservation(parkingSpaceData.hourlyRate, post.startTime, post.endTime, parkingSpaceData.metamask)
-    console.log(res);
+    const res = await makeReservation(
+      parkingSpaceData.hourlyRate,
+      post.startTime,
+      post.endTime,
+      parkingSpaceData.metamask
+    );
+
     if (res.status === false) {
-      window.alert("Error making reservation");
+      window.alert("Error making Transaction");
       return;
     }
+
     const response = await fetch(
       `api/renters/${session.user.id}/reservations`,
       {
@@ -101,8 +121,8 @@ const Page = () => {
           parkingSpaceId: parkingSpaceData._id,
           start: post.startTime,
           end: post.endTime,
-          amount: 500, //comes from context
-          txHash: res.transactionHash, //comes from context
+          amount: res.amount,
+          txHash: res.txHash,
         }),
       }
     );
@@ -114,17 +134,32 @@ const Page = () => {
     }
   };
 
+  const renterFormData = {
+    metamask: post.metamask,
+    parkingSpace: post.parkingSpace,
+    startTime: post.startTime,
+    endTime: post.endTime,
+    amount: post.amount,
+    paid: post.paid,
+    txHash: post.txHash,
+  };
+
+  const submit = false;
 
   return (
     <>
       <Form
-        post={post}
-        handleChange={handleChange}
+        type="renter"
         handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        post={renterFormData}
+        submit={submit}
         updateAddress={updateAddress}
         markers={markers}
+        parkingSpaceAddress={parkingSpaceAddress}
       />
     </>
   );
-}
+};
+
 export default Page;

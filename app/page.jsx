@@ -1,8 +1,8 @@
 "use client";
 
-import Map from "@components/OMap";
+import Map from "@components/Maps/OMap";
 
-const Home = () => {
+const Home = ({updateAddress}) => {
   return (
     <section className="w-full text-white flex items-center justify-center flex-col min-h-screen">
       <h1 className="head_text text-center">
@@ -15,7 +15,7 @@ const Home = () => {
         Solutions.
       </p>
 
-      <Map />
+      <Map updateAddress={updateAddress} />
     </section>
   );
 };

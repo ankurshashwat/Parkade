@@ -1,126 +1,110 @@
-export const contractAddress = "0x7021f3F5fEbE0075236d0c52BA40B2df32d236fD";
-export const contractABI =  [
+export const contractAddress = "0xEe9Bf3A4aAe4eDB2b59eb3Fb14EfD230a73Cdd94";
+export const contractABI = [
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "reservationId",
-        "type": "bytes32"
+        indexed: true,
+        internalType: "bytes32",
+        name: "reservationId",
+        type: "bytes32",
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "startTime",
+        type: "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "endTime",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "endTime",
+        type: "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        indexed: false,
+        internalType: "bool",
+        name: "paid",
+        type: "bool",
       },
       {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "paid",
-        "type": "bool"
+        indexed: false,
+        internalType: "address",
+        name: "ownerAddress",
+        type: "address",
       },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "ownerAddress",
-        "type": "address"
-      }
     ],
-    "name": "Rsvp",
-    "type": "event"
+    name: "Rsvp",
+    type: "event",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "_hourlyRate",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "_startTime",
+        type: "uint256",
       },
       {
-        "internalType": "uint256",
-        "name": "_startTime",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "_endTime",
+        type: "uint256",
       },
       {
-        "internalType": "uint256",
-        "name": "_endTime",
-        "type": "uint256"
+        internalType: "address payable",
+        name: "_ownerAddress",
+        type: "address",
       },
-      {
-        "internalType": "address payable",
-        "name": "_ownerAddress",
-        "type": "address"
-      }
     ],
-    "name": "MakeReservation",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    name: "makeReservation",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
     ],
-    "name": "reservations",
-    "outputs": [
+    name: "reservations",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "hourlyRate",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "startTime",
+        type: "uint256",
       },
       {
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "endTime",
+        type: "uint256",
       },
       {
-        "internalType": "uint256",
-        "name": "endTime",
-        "type": "uint256"
+        internalType: "bool",
+        name: "paid",
+        type: "bool",
       },
       {
-        "internalType": "bool",
-        "name": "paid",
-        "type": "bool"
+        internalType: "address",
+        name: "ownerAddress",
+        type: "address",
       },
-      {
-        "internalType": "address",
-        "name": "ownerAddress",
-        "type": "address"
-      }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "stateMutability": "payable",
-    "type": "receive"
-  }
-]
+    stateMutability: "payable",
+    type: "receive",
+  },
+];
 
 export const darkMapStyle = [
   {

@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
-import { ParkadeContext } from "@context/context";
 
 const Nav = () => {
-  const { account } = useContext(ParkadeContext);
   const { data: session } = useSession();
   const [providers, setProviders] = useState(null);
+  const [toggleDropdown, setToggleDropdown] = useState(false);
 
   useEffect(() => {
     const setupProviders = async () => {
@@ -20,40 +19,39 @@ const Nav = () => {
     setupProviders();
   }, []);
 
-  console.log("Session:", session);
-
-  const shortenedAccount = account
-    ? `${account.slice(0, 6)}...${account.slice(-4)}`
-    : "";
-
-  const copyToClipboard = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(account);
-    }
-  };
+  console.log(session)
 
   return (
-    <nav className="flex items-center justify-between w-full mb-16 pt-3 px-8">
+    <nav className="flex-between w-full mb-16 pt-3">
       <Link href="/" className="flex items-center gap-2 text-xl font-bold">
         <p className="logo_text">Parkade</p>
       </Link>
 
-      <div className="flex items-center gap-3 md:gap-5">
-        {shortenedAccount && (
-          <p
-            className="text-gray-500 font-bold outline_btn cursor-pointer"
-            onClick={copyToClipboard}
+      <div className="sm:flex hidden items-center gap-3 md:gap-5">
+        <Link href="/listParkingSpace">
+          <button
+            type="button"
+            className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:bg-yellow-600"
           >
-            {shortenedAccount}
-          </p>
-        )}
+            List Parking Space
+          </button>
+        </Link>
+
+        <Link href="/rentParkingSpace">
+          <button
+            type="button"
+            className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:bg-green-600"
+          >
+            Rent Parking Space
+          </button>
+        </Link>
 
         {session?.user ? (
           <>
             <button
               type="button"
               onClick={signOut}
-              className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:bg-red-600"
+              className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:bg-red-600"
             >
               Sign Out
             </button>
@@ -76,9 +74,76 @@ const Nav = () => {
                   type="button"
                   key={provider.name}
                   onClick={() => signIn(provider.id)}
-                  className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:bg-gray-800"
+                  className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:bg-gray-800"
                 >
                   Sign In
+                </button>
+              ))}
+          </>
+        )}
+      </div>
+
+      <div className="sm:hidden flex relative">
+        {session?.user ? (
+          <div className="flex">
+            <Image
+              src={session?.user.image}
+              width={37}
+              height={37}
+              className="rounded-full"
+              alt="profile"
+              onClick={() => setToggleDropdown(!toggleDropdown)}
+            />
+
+            {toggleDropdown && (
+              <div className="dropdown">
+                <Link
+                  href="/profile"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  Profile
+                </Link>
+                <Link
+                  href="/listParkingSpace"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  List Parking Space
+                </Link>
+                <Link
+                  href="/rentParkingSpace"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  Rent Parking Space
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToggleDropdown(false);
+                    signOut();
+                  }}
+                  className="mt-5 w-full px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            {providers &&
+              Object.values(providers).map((provider) => (
+                <button
+                  type="button"
+                  className="px-4 md:px-4 py-2 md:py-2 text-xs md:text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:bg-gray-800"
+                  key={provider.name}
+                  onClick={() => {
+                    signIn(provider.id);
+                  }}
+                >
+                  Sign in
                 </button>
               ))}
           </>

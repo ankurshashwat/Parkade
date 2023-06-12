@@ -1,6 +1,6 @@
 "use client";
 
-import Form from "@components/OForm";
+import Form from "@components/Form";
 import { ParkadeContext } from "@context/context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -67,12 +67,22 @@ const Page = () => {
     }
   };
 
+  const ownerFormData = {
+    hourlyRate: post.hourlyRate,
+    metamask: post.metamask,
+    reservations: post.reservations,
+  };
+
+  const submit = false;
+
   return (
     <>
       <Form
-        post={post}
-        handleChange={handleChange}
+        type="owner"
         handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        post={ownerFormData}
+        submit={submit}
         updateAddress={updateAddress}
       />
     </>
