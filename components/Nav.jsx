@@ -29,15 +29,15 @@ const Nav = () => {
 
       <div className="sm:flex hidden items-center gap-3 md:gap-5">
         <Link href="/listParkingSpace">
-          <p className="font-satoshi font-semibold underline">
+          <button className="outline_btn font-satoshi font-semibold">
             List Parking Space
-          </p>
+          </button>
         </Link>
 
         <Link href="/rentParkingSpace">
-          <p className="font-satoshi font-semibold underline">
+          <button className="outline_btn font-satoshi font-semibold">
             Rent Parking Space
-          </p>
+          </button>
         </Link>
 
         {session?.user ? (
