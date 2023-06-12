@@ -19,7 +19,7 @@ const Nav = () => {
     setupProviders();
   }, []);
 
-  console.log(session)
+  console.log(session);
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -29,21 +29,15 @@ const Nav = () => {
 
       <div className="sm:flex hidden items-center gap-3 md:gap-5">
         <Link href="/listParkingSpace">
-          <button
-            type="button"
-            className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm font-medium text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:bg-yellow-600"
-          >
+          <p className="font-satoshi font-semibold underline">
             List Parking Space
-          </button>
+          </p>
         </Link>
 
         <Link href="/rentParkingSpace">
-          <button
-            type="button"
-            className="px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:bg-green-600"
-          >
+          <p className="font-satoshi font-semibold underline">
             Rent Parking Space
-          </button>
+          </p>
         </Link>
 
         {session?.user ? (

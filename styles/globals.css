@@ -97,7 +97,7 @@
 }
 
 .head_text {
-  @apply mt-5 text-xl font-extrabold leading-[1.15] text-black sm:text-6xl;
+  @apply mt-5 text-xl font-extrabold font-inter leading-[1.15] text-black sm:text-6xl;
 }
 
 .glassmorphism {
@@ -113,19 +113,11 @@
 }
 
 .desc {
-  @apply mt-5 text-lg text-gray-600 sm:text-xl max-w-2xl;
+  @apply mt-5 text-lg font-satoshi text-gray-600 sm:text-xl max-w-2xl;
 }
 
 .orange_gradient {
   @apply bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 bg-clip-text text-transparent;
-}
-
-.green_gradient {
-  @apply bg-gradient-to-r from-green-400 to-green-500 bg-clip-text text-transparent;
-}
-
-.yellow_gradient {
-  @apply bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent;
 }
 
 .flex-center {

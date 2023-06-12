@@ -19,7 +19,7 @@ const Form = ({
       return (
         <>
           <h1 className="head_text text-left">
-            <span className="yellow_gradient">Owners Form</span>
+            <span className="orange_gradient">Owners Form</span>
           </h1>
           <p className="desc text-left max-w-md">
             Fill in the form details below.
@@ -97,7 +97,7 @@ const Form = ({
       return (
         <>
           <h1 className="head_text text-left">
-            <span className="green_gradient">Renters Form</span>
+            <span className="orange_gradient">Renters Form</span>
           </h1>
           <p className="desc text-left max-w-md">
             Fill in the form details below.

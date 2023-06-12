@@ -58,18 +58,6 @@ const Page = () => {
     console.log("parking:", data);
     return data;
   };
-  
-  // const getReservedSlots = async () => {
-  //   const response = await fetch(`api/parkingSpace/slots/${parkingSpaceData._id}`, {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       address: parkingSpaceAddress,
-  //     }),
-  //   });
-  //   const data = await response.json();
-  //   console.log("slots:", data);
-  //   return data;
-  // };
 
   const getAllMarkers = async () => {
     const response = await fetch("api/parkingSpace/");
